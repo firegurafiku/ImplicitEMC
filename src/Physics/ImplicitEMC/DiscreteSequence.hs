@@ -3,6 +3,7 @@ module Physics.ImplicitEMC.DiscreteSequence (
     regularSequence,
     regularSequence',
     irregularSequence,
+    fromList,
     lowerBound,
     upperBound)
 where
@@ -44,3 +45,5 @@ ticksDelta :: DiscreteSequence -> Float
 ticksDelta seq = case seq of
         RegularSequence (a, b) n -> (b - a) / ((itof n) - 1)
         IrregularSequence xs     -> error "No support for irregular sequences"
+
+fromList = irregularSequence
