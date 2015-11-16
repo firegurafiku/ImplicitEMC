@@ -18,9 +18,13 @@ extra-source-files: README.md
 library
   hs-source-dirs:   src
   exposed-modules:  Physics.ImplicitEMC,
+                    Physics.ImplicitEMC.Utils.Trivia,
                     Physics.ImplicitEMC.MathUtils,
                     Physics.ImplicitEMC.NetCDF,
+                    Physics.ImplicitEMC.MaterialScene,
+                    Physics.ImplicitEMC.DiscreteSequence,
                     Physics.ImplicitEMC.FDTD,
+                    Physics.ImplicitEMC.FDTD.YeeLattice,
                     Physics.ImplicitEMC.FDTD.Parameters,
                     Physics.ImplicitEMC.FDTD.Render,
                     Physics.ImplicitEMC.FDTD.ExportNetCDF
@@ -33,4 +37,8 @@ library
 
 executable testNetCDF
   main-is:         test/TestNetCDF.hs
+  build-depends:   base, vector, hmatrix, hnetcdf, ImplicitEMC
+
+executable testNetCDF2
+  main-is:         test/TestSimpleNetCDF.hs
   build-depends:   base, vector, hmatrix, hnetcdf, ImplicitEMC

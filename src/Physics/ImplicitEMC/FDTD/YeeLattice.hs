@@ -1,4 +1,4 @@
-module Physics.ImplicitEMC.FDTD.YeeLattice (YeeLattice) where
+module Physics.ImplicitEMC.FDTD.YeeLattice (YeeLattice(..)) where
 
 import qualified Physics.ImplicitEMC.DiscreteSequence as DQ
 

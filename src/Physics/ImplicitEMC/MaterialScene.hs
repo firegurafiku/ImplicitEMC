@@ -1,5 +1,7 @@
 module Physics.ImplicitEMC.MaterialScene (
-        MaterialScene(..)
+        Material(..),
+        MaterialScene(..),
+        vacuum
 ) where
 
 import qualified Graphics.Implicit.Definitions as ID

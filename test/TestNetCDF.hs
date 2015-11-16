@@ -11,8 +11,8 @@ infixl 0 $$ -- left associative
 
 writeNetCDF :: FilePath -> IO ()
 writeNetCDF filename = do
-        let dimX = NF.BoundedDimention "nx" 100
-            dimY = NF.BoundedDimention "ny" 100
+        let dimX = NF.BoundedDimention "nx" 1000
+            dimY = NF.BoundedDimention "ny" 1000
             dimZ = NF.BoundedDimention "nz" 100
             var1 = NF.Variable "test1" 2 NF.Float [dimX, dimY, dimZ]
             var2 = NF.Variable "test2" 3 NF.Float [dimX, dimY, dimZ]
@@ -23,8 +23,8 @@ writeNetCDF filename = do
 
         status <- NF.withCreateFile info $ \fileHandle -> do
             putStrLn "HERE"
-            NF.putFloats fileHandle var1 (map MA.itof [1..1000000])
-            NF.putFloats fileHandle var2 (map (MA.itof . (*2)) [1..1000000])
+            NF.putFloats fileHandle var1 (map MA.itof [1..100000000])
+            NF.putFloats fileHandle var2 (map (MA.itof . (*2)) [1..100000000])
 
         case status of
             Left _   -> putStrLn "FAIL"

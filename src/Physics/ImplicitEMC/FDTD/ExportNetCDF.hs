@@ -1,61 +1,66 @@
 module Physics.ImplicitEMC.FDTD.ExportNetCDF where
 
-import qualified Data.Map as M
-import qualified Data.NetCDF as NC
 import qualified Physics.ImplicitEMC.NetCDF          as NF
 import qualified Physics.ImplicitEMC.FDTD.Parameters as FDTD
 import qualified Physics.ImplicitEMC.FDTD.Render     as FDTD
+import Data.Maybe
+import Data.Monoid
+import Control.Monad
+
+gridVariables :: [(FDTD.RenderedData -> Maybe [Float], String, Int)]
+gridVariables = [
+            (FDTD.gridExEpsilon,  "gridExEpsilon", 1),
+            (FDTD.gridEyEpsilon,  "gridEyEpsilon", 2),
+            (FDTD.gridEzEpsilon,  "gridEzEpsilon", 3),
+            (FDTD.gridHxEpsilon,  "gridHxEpsilon", 4),
+            (FDTD.gridHyEpsilon,  "gridHyEpsilon", 5),
+            (FDTD.gridHzEpsilon,  "gridHzEpsilon", 6),
+            (FDTD.gridExMu,       "gridExMu",      7),
+            (FDTD.gridEyMu,       "gridEyMu",      8),
+            (FDTD.gridEzMu,       "gridEzMu",      9),
+            (FDTD.gridHxMu,       "gridHxMu",     10),
+            (FDTD.gridHyMu,       "gridHyMu",     11),
+            (FDTD.gridHzMu,       "gridHzMu",     12),
+            (FDTD.gridExSigmaE,   "gridExSigmaE", 13),
+            (FDTD.gridEySigmaE,   "gridEySigmaE", 14),
+            (FDTD.gridEzSigmaE,   "gridEzSigmaE", 15),
+            (FDTD.gridHxSigmaE,   "gridHxSigmaE", 16),
+            (FDTD.gridHySigmaE,   "gridHySigmaE", 17),
+            (FDTD.gridHzSigmaE,   "gridHzSigmaE", 18),
+            (FDTD.gridExSigmaH,   "gridExSigmaH", 19),
+            (FDTD.gridEySigmaH,   "gridEySigmaH", 20),
+            (FDTD.gridEzSigmaH,   "gridEzSigmaH", 21),
+            (FDTD.gridHxSigmaH,   "gridHxSigmaH", 22),
+            (FDTD.gridHySigmaH,   "gridHySigmaH", 23),
+            (FDTD.gridHzSigmaH,   "gridHzSigmaH", 24)]
 
 writeNetCDF :: FilePath -> FDTD.Parameters -> FDTD.RenderedData -> IO ()
-writeNetCDF filename parameters renderedData = do
-        let ncInfo = getInfo(filename)
+writeNetCDF filename params render = do
+        let dimX = NF.BoundedDimention "nx" 1000
+            dimY = NF.BoundedDimention "ny" 1000
+            dimZ = NF.BoundedDimention "nz" 100
+            dims = [dimX, dimY, dimZ]
+            vars = [NF.Variable n i NF.Float dims | (f, n, i) <- gridVariables, isJust(f render)]
+            var2 = NF.Variable "test2" 3 NF.Float [dimX, dimY, dimZ]
+        let info = NF.Info
+                       (NF.FileInfo filename 1)
+                       (NF.Dimentions dims)
+                       (NF.Variables  vars)
 
-        Right nc <- NC.createFile ncInfo
-        putStrLn "HERE"
+        status <- NF.withCreateFile info $ \fileHandle -> do
+            putStrLn "HERE"
 
-getInfo :: FilePath -> NC.NcInfo a
-getInfo filename = NF.makeNcInfo $
-        NF.Info
-            (NF.FileInfo filename 1)
-            (NF.Dimentions [dimX, dimY, dimZ])
-            (NF.Variables  [])
-        where dimX = NF.BoundedDimention "nx" 100
-              dimY = NF.BoundedDimention "nx" 100 
-              dimZ = NF.BoundedDimention "nx" 100
+            let mkVar name id = NF.Variable name id NF.Float dims
+            let list = map (\(vals, name, id) -> (mkVar name id, vals))
+                     $ mapMaybe (\(f, name, id) -> (\j -> (j, name, id)) `fmap` (f render))
+                     $ gridVariables
 
+            forM_ list $ \(var, vals) -> do
+                NF.putFloats fileHandle var vals
+                 
 
-{--
-getDims :: FDTD.YeeLattice -> NC.NcDims
+            return $ Right ()
 
-getVars :: NC.NcVar
-getVars parameters renderedData =
-        let dims = getDims $ FDTD.lattice parameters
-            empty = M.fromList [] :: (M.Map NC.Name NC.NcVar)
-            variable name varId = (name, NC.NcVar name NC.NcFloat dims empty)
-            
-        in M.fromList $ map (\(f, n, i) -> getVar n i) $ filter (\(f, n, i) -> isJust (f parameters))
-            (gridExEpsilon,  "gridExEpsilon", 1),
-            (gridEyEpsilon,  "gridEyEpsilon", 2),
-            (gridEzEpsilon,  "gridEzEpsilon", 3),
-            (gridHxEpsilon,  "gridHxEpsilon", 4),
-            (gridHyEpsilon,  "gridHyEpsilon", 5),
-            (gridHzEpsilon,  "gridHzEpsilon", 6),
-            (gridExMu,       "gridExMu",      7),
-            (gridEyMu,       "gridEyMu",      8),
-            (gridEzMu,       "gridEzMu",      9),
-            (gridHxMu,       "gridHxMu",     10),
-            (gridHyMu,       "gridHyMu",     11),
-            (gridHzMu,       "gridHzMu",     12),
-            (gridExSigmaE,   "gridExSigmaE", 13),
-            (gridEySigmaE,   "gridEySigmaE", 14),
-            (gridEzSigmaE,   "gridEzSigmaE", 15),
-            (gridHxSigmaE,   "gridHxSigmaE", 16),
-            (gridHySigmaE,   "gridHySigmaE", 17),
-            (gridHzSigmaE,   "gridHzSigmaE", 18),
-            (gridExSigmaH,   "gridExSigmaH", 19),
-            (gridEySigmaH,   "gridEySigmaH", 20),
-            (gridEzSigmaH,   "gridEzSigmaH", 21),
-            (gridHxSigmaH,   "gridHxSigmaH", 22),
-            (gridHySigmaH,   "gridHySigmaH", 23),
-            (gridHzSigmaH,   "gridHzSigmaH", 24)]
---}
+        case status of
+            Left _   -> putStrLn "FAIL"
+            Right () -> putStrLn "OKAY"

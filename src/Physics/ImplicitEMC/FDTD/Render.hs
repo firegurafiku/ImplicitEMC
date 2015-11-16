@@ -4,7 +4,7 @@ import qualified Physics.ImplicitEMC.FDTD.Parameters as FP
 import qualified Physics.ImplicitEMC.MaterialScene   as MS
 import qualified Numeric.LinearAlgebra               as LA
 
-type SlicedMatrix3D = [LA.Matrix Float]
+type SlicedMatrix3D = [Float]
 
 data RenderedData = RenderedData {
         gridExEpsilon :: Maybe SlicedMatrix3D,
@@ -33,6 +33,6 @@ data RenderedData = RenderedData {
         gridHzSigmaH  :: Maybe SlicedMatrix3D
 }
 
-renderNetCDF :: FP.Parameters -> MS.MaterialScene -> RenderedData
-renderNetCDF parameters scene = error "Not implemented"
+renderScene :: FP.Parameters -> MS.MaterialScene -> RenderedData
+renderScene parameters scene = error "Not implemented"
 
