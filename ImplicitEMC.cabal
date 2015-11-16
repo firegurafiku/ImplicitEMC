@@ -11,15 +11,26 @@ license-file:       LICENSE.txt
 homepage:           https://github.com/firegurafiku/ImplicitEMC
 bug-reports:        https://github.com/firegurafiku/ImplicitEMC/issues
 build-type:         Simple
-cabal-version:      >= 1.6
+cabal-version:      >= 1.8
 tested-with:        GHC == 7.6.3
 extra-source-files: README.md
 
 library
   hs-source-dirs:   src
   exposed-modules:  Physics.ImplicitEMC,
+                    Physics.ImplicitEMC.MathUtils,
+                    Physics.ImplicitEMC.NetCDF,
                     Physics.ImplicitEMC.FDTD,
-                    Physics.ImplicitEMC.FDTD.Parameters
+                    Physics.ImplicitEMC.FDTD.Parameters,
+                    Physics.ImplicitEMC.FDTD.Render,
+                    Physics.ImplicitEMC.FDTD.ExportNetCDF
   build-depends:    base        == 4.*,
+                    containers,
+                    hnetcdf,
+                    hmatrix,
+                    vector,
                     implicit
 
+executable testNetCDF
+  main-is:         test/TestNetCDF.hs
+  build-depends:   base, vector, hmatrix, hnetcdf, ImplicitEMC

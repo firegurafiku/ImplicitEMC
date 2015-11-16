@@ -11,7 +11,7 @@ data Parameters = Parameters {
         excitationSignals  :: [DS.DiscreteSignal],
         boundaryConditions :: [BoundaryCondition],
         tfsfRegion         :: Maybe ID.Box3,
-        ffTransformRegion  :: Maybe ID.Box3,
+        fftRegion          :: Maybe ID.Box3,
         localProbes        :: [LocalProbe],
         farFieldProbes     :: [FarFieldProbe]
 }
@@ -23,4 +23,4 @@ data LocalProbe = LocalProbe
 data FarFieldProbe = FarFieldProbe
 
 checkCourantCondition :: YL.YeeLattice -> DQ.DiscreteSequence -> Bool
-checkCourantCondition lattice moments = False
+checkCourantCondition lattice moments = error "Not implemented"
