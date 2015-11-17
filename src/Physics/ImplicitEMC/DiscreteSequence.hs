@@ -5,7 +5,8 @@ module Physics.ImplicitEMC.DiscreteSequence (
     irregularSequence,
     fromList,
     lowerBound,
-    upperBound)
+    upperBound,
+    iterateSequence)
 where
 
 import Data.List (sort)
@@ -47,3 +48,13 @@ ticksDelta seq = case seq of
         IrregularSequence xs     -> error "No support for irregular sequences"
 
 fromList = irregularSequence
+
+-- |
+-- 
+-- > ghci> let seq = regularSequence (0, 10), 11
+-- > ghci> iterateSequence seq
+-- > [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]
+--
+iterateSequence seq = case seq of
+        RegularSequence (a, b) n -> [a + (b-a)*(itof i)/(itof n-1) | i <- [0..n-1]]
+        IrregularSequence xs     -> xs

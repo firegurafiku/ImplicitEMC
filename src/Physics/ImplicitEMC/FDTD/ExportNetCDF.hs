@@ -3,6 +3,7 @@ module Physics.ImplicitEMC.FDTD.ExportNetCDF where
 import qualified Physics.ImplicitEMC.NetCDF          as NF
 import qualified Physics.ImplicitEMC.FDTD.Parameters as FDTD
 import qualified Physics.ImplicitEMC.FDTD.Render     as FDTD
+import Data.Either
 import Data.Maybe
 import Data.Monoid
 import Control.Monad
@@ -12,24 +13,12 @@ gridVariables = [
             (FDTD.gridExEpsilon,  "gridExEpsilon", 1),
             (FDTD.gridEyEpsilon,  "gridEyEpsilon", 2),
             (FDTD.gridEzEpsilon,  "gridEzEpsilon", 3),
-            (FDTD.gridHxEpsilon,  "gridHxEpsilon", 4),
-            (FDTD.gridHyEpsilon,  "gridHyEpsilon", 5),
-            (FDTD.gridHzEpsilon,  "gridHzEpsilon", 6),
-            (FDTD.gridExMu,       "gridExMu",      7),
-            (FDTD.gridEyMu,       "gridEyMu",      8),
-            (FDTD.gridEzMu,       "gridEzMu",      9),
             (FDTD.gridHxMu,       "gridHxMu",     10),
             (FDTD.gridHyMu,       "gridHyMu",     11),
             (FDTD.gridHzMu,       "gridHzMu",     12),
             (FDTD.gridExSigmaE,   "gridExSigmaE", 13),
             (FDTD.gridEySigmaE,   "gridEySigmaE", 14),
             (FDTD.gridEzSigmaE,   "gridEzSigmaE", 15),
-            (FDTD.gridHxSigmaE,   "gridHxSigmaE", 16),
-            (FDTD.gridHySigmaE,   "gridHySigmaE", 17),
-            (FDTD.gridHzSigmaE,   "gridHzSigmaE", 18),
-            (FDTD.gridExSigmaH,   "gridExSigmaH", 19),
-            (FDTD.gridEySigmaH,   "gridEySigmaH", 20),
-            (FDTD.gridEzSigmaH,   "gridEzSigmaH", 21),
             (FDTD.gridHxSigmaH,   "gridHxSigmaH", 22),
             (FDTD.gridHySigmaH,   "gridHySigmaH", 23),
             (FDTD.gridHzSigmaH,   "gridHzSigmaH", 24)]
@@ -55,11 +44,10 @@ writeNetCDF filename params render = do
                      $ mapMaybe (\(f, name, id) -> (\j -> (j, name, id)) `fmap` (f render))
                      $ gridVariables
 
-            forM_ list $ \(var, vals) -> do
-                NF.putFloats fileHandle var vals
-                 
+            status <- forM_ list $ \(var, vals) -> do
+                          NF.putFloats fileHandle var vals 
 
-            return $ Right ()
+            return $ Right () -- FIXME!
 
         case status of
             Left _   -> putStrLn "FAIL"

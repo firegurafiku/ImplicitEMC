@@ -23,6 +23,7 @@ library
                     Physics.ImplicitEMC.NetCDF,
                     Physics.ImplicitEMC.MaterialScene,
                     Physics.ImplicitEMC.DiscreteSequence,
+                    Physics.ImplicitEMC.RectangularLattice,
                     Physics.ImplicitEMC.FDTD,
                     Physics.ImplicitEMC.FDTD.YeeLattice,
                     Physics.ImplicitEMC.FDTD.Parameters,

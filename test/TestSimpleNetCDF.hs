@@ -4,18 +4,21 @@ import qualified Physics.ImplicitEMC.DiscreteSequence as DQ
 import qualified Physics.ImplicitEMC.MaterialScene    as MS
 import qualified Physics.ImplicitEMC.MathUtils       as MA
 import qualified Physics.ImplicitEMC.NetCDF          as NF
+import qualified Physics.ImplicitEMC.RectangularLattice as EMC
 import qualified Physics.ImplicitEMC.FDTD.YeeLattice as FDTD
 import qualified Physics.ImplicitEMC.FDTD.Parameters as FDTD
 import qualified Physics.ImplicitEMC.FDTD.Render     as FDTD
 import qualified Physics.ImplicitEMC.FDTD.ExportNetCDF as FDTD
 
 yeeLattice = FDTD.YeeLattice {
-        FDTD.gridEx = DQ.regularSequence (0, 1) 100,
-        FDTD.gridEy = DQ.regularSequence (0, 1) 100,
-        FDTD.gridEz = DQ.regularSequence (0, 1) 100,
-        FDTD.gridHx = DQ.regularSequence (0, 1) 100,
-        FDTD.gridHy = DQ.regularSequence (0, 1) 100,
-        FDTD.gridHz = DQ.regularSequence (0, 1) 100
+        FDTD.latticeTE = EMC.RectangularLattice {
+                EMC.sequenceX = DQ.regularSequence (0, 1) 100,
+                EMC.sequenceY = DQ.regularSequence (0, 1) 100,
+                EMC.sequenceZ = DQ.regularSequence (0, 1) 100 },
+        FDTD.latticeTM = EMC.RectangularLattice {
+                EMC.sequenceX = DQ.regularSequence (0, 1) 100,
+                EMC.sequenceY = DQ.regularSequence (0, 1) 100,
+                EMC.sequenceZ = DQ.regularSequence (0, 1) 100 }
 }
 
 parameters = FDTD.Parameters {

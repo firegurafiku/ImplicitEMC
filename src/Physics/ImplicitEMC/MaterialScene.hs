@@ -21,6 +21,7 @@ vacuum = Material {
         sigmaE  = 0.0,
         sigmaH  = 0.0 }
 
+-- TODO: Add objects1D eventually.
 data MaterialScene = MaterialScene {
         objects2D          :: [(ID.SymbolicObj2, MaterialFunc)],
         objects3D          :: [(ID.SymbolicObj3, MaterialFunc)],
